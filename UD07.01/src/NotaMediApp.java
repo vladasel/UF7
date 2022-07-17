@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+
+import javax.swing.JOptionPane;
+
 import java.util.Scanner;
 
 /***
@@ -25,41 +28,40 @@ public class NotaMediApp {
 		Hashtable<String, Double> clase = new Hashtable<String, Double>();
 		int opcion;
 		do {
-			System.out.println("\n**********MENU*********************");// opciones a elegir
-			System.out.println("1 introducir alumnos y notas");
-			System.out.println("2 mostrar media de un alumno");
-			System.out.println("3 ver todas las medias");
-			System.out.println("4 salir");
-			System.out.println("***********************************");
-			System.out.println("introduce opción: ");
-			opcion = sc.nextInt();
+
+			opcion = Integer.parseInt(JOptionPane.showInputDialog("**********MENU*********************"
+					+ "\n1 introducir alumnos y notas(end para acabar nombres,0 para acabar notas)"
+					+ "\n2 mostrar media de un alumno" + "\n3 ver todas las medias" + "\n4 salir"
+					+ "\n***********************************" + "\nopcion:  "));
 
 			switch (opcion) {
 			// permite introducir varios alumnos y sus notas, los datos se guardan en un
 			// hashtable
 			case 1:
 				clase = introducirAlumnosYnotas();
-				System.out.println("datos introducidos!");
+				JOptionPane.showMessageDialog(null, "datos introducidos!");
 				break;
 
 			// muestra la media de un alumo en concreto,pasado por parametro
 			case 2:
-				System.out.println("opcion 2");
+				mostrarMediaAlumno(clase);
 				break;
 
 			// muestra la media de todos los alumos
 			case 3:
-				System.out.println("opción 3");
+				mostrarMedias(clase);
+				JOptionPane.showMessageDialog(null, "datos mostrados por consola");
+
 				break;
 
 			// sale del menu
 			case 4:
-				System.out.println("hasta luego ;)");
+				JOptionPane.showMessageDialog(null, "hasta luego ;)");
 				break;
 
 			// por si la opcion introducida no corresponde con ningún case
 			default:
-				System.out.println("la opción introducida no es correcta!");
+				JOptionPane.showMessageDialog(null, "la opción introducida no es correcta!");
 				break;
 
 			}
@@ -70,7 +72,6 @@ public class NotaMediApp {
 
 	// introducir alumno y sus notas -->ses guarda el alumno y su media
 	public static Hashtable<String, Double> introducirAlumnosYnotas() {
-		Scanner scan = new Scanner(System.in);
 //variables
 		String nombre;
 		double nota;
@@ -82,8 +83,8 @@ public class NotaMediApp {
 		ArrayList<Double> listaNotas = new ArrayList<>();
 
 		do {// mientras no se introduzca "end" se podrán seguir introduciendo nombres
-			System.out.println("introduce el nombre del alumno: ");
-			nombre = scan.nextLine();
+
+			nombre = JOptionPane.showInputDialog("introduce el nombre del alumno:   ");
 
 			if (nombre.equals("end")) {
 
@@ -92,23 +93,22 @@ public class NotaMediApp {
 				listaAlumnos.add(nombre);// despues de introducir el nombre, se guarda en una lista
 
 				do {
-					System.out.println("introduce nota:");// se introducen notas mientras no encuentre un -1
-					nota = scan.nextDouble();
-					scan.nextLine();
+					// se introducen notas mientras no encuentre un -1
+					nota = Integer.parseInt(JOptionPane.showInputDialog("introduce nota:  "));
 
 					suma = suma + nota;// vamos sumando las notas introducidas
 					contadorNotas++;// vamos sumando el numero de notas introducidas
 
-				} while (nota != -1);
-				media = suma / contadorNotas - 1;// Calculamos media
+				} while (nota != 0);
+				media = suma / (contadorNotas - 1);// Calculamos media
 				listaNotas.add(media);// intorducimos en una lista la media
-			}
-		} while (!nombre.equals("end"));
-		// actualizamos
-		contadorNotas = 0;
-		suma = 0;
+				// actualizamos
 
-		scan.close();
+				contadorNotas = 0;
+				suma = 0;
+			}
+
+		} while (!nombre.equals("end"));
 
 		Hashtable<String, Double> clase = new Hashtable<String, Double>();
 		for (int i = 0; i < listaAlumnos.size(); i++) {// por cada nombre se guarda una media
@@ -120,12 +120,21 @@ public class NotaMediApp {
 	}
 
 	// mostrar media de un alumno
-	public static void mostrarMediaAlumno(String nameAlumno) {
+	public static void mostrarMediaAlumno(Hashtable<String, Double> clase) {
+		String nameAlumno = JOptionPane.showInputDialog(null, "nombre del alumno:");
+		if (clase.containsKey(nameAlumno) == true) {
+			JOptionPane.showMessageDialog(null, "la media de " + nameAlumno + " es\n" + clase.get(nameAlumno));
+		} else {
+			JOptionPane.showMessageDialog(null, "el alumno introducido no existe");
+		}
 
 	}
 
 	// ver todas las medias
-	public static void mostrarMedias() {
+	public static void mostrarMedias(Hashtable<String, Double> clase) {
+		for (String i : clase.keySet()) {
+			System.out.println(i + " " + clase.get(i));
+		}
 
 	}
 
